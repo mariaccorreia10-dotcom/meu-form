@@ -170,7 +170,24 @@
       <button type="submit">Cadastrar</button>
     </form>
   </main>
+```html
+<script>
+  const form = document.getElementById("formCadastro");
 
+  form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    document.getElementById("paginaCadastro").hidden = true;
+    document.getElementById("paginaSucesso").hidden = false;
+  });
+</script>
+```
+
+E a segunda parte precisa começar assim:
+
+```html
+<main class="container mensagem" id="paginaSucesso" hidden>
+```
   <main class="container mensagem" id="paginaSucesso" hidden>
     <h1>O SENAI AGRADECE SUA INSCRIÇÃO!!!</h1>
     <button class="voltar" id="btnVoltar" type="button">Voltar</button>
