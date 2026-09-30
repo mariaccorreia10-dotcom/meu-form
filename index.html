@@ -1,220 +1,326 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastro de Usuário</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Usuário - SENAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-    body {
-      margin: 0;
-      background: #fff;
-    }
+        /* ===== TELA 1 - FORMULÁRIO ===== */
+        .form-container {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 30px 35px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
 
-    .container {
-      width: 90%;
-      max-width: 780px;
-      margin: 30px auto;
-      padding: 28px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
+        .form-container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
 
-    h1 {
-      margin-top: 0;
-      font-size: 32px;
-    }
+        .form-group {
+            margin-bottom: 16px;
+        }
 
-    label {
-      display: block;
-      margin-top: 20px;
-      margin-bottom: 8px;
-      font-size: 22px;
-      font-weight: bold;
-    }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 5px;
+            color: #1a1a1a;
+        }
 
-    input,
-    select {
-      width: 100%;
-      height: 48px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 18px;
-    }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
 
-    button {
-      width: 100%;
-      height: 52px;
-      margin-top: 22px;
-      border: none;
-      border-radius: 5px;
-      background: #087ff5;
-      color: white;
-      font-size: 22px;
-      cursor: pointer;
-    }
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.15);
+        }
 
-    button:hover {
-      background: #066bd0;
-    }
+        .form-group input::placeholder {
+            color: #999;
+        }
 
-    .mensagem {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 500px;
-      background: #1000ee;
-      color: white;
-      text-align: center;
-    }
+        .btn-cadastrar {
+            width: 100%;
+            padding: 14px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
 
-    .mensagem h1 {
-      font-size: 28px;
-    }
+        .btn-cadastrar:hover {
+            background-color: #0056b3;
+        }
 
-    .voltar {
-      width: 155px;
-      background: #ddd;
-      color: white;
-      font-size: 18px;
-    }
-  </style>
+        /* ===== TELA 2 - AGRADECIMENTO ===== */
+        .thankyou-container {
+            display: none;
+            background-color: #0000cc;
+            color: #fff;
+            padding: 60px 40px;
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+            border-radius: 8px;
+            min-height: 300px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .thankyou-container h2 {
+            font-size: 26px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .btn-voltar {
+            padding: 12px 40px;
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-voltar:hover {
+            background-color: #ccc;
+        }
+
+        /* Mensagem de erro */
+        .error-msg {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 3px;
+            display: none;
+        }
+
+        .form-group input.invalid {
+            border-color: #dc3545;
+        }
+    </style>
 </head>
-
 <body>
-  <main class="container" id="paginaCadastro">
-    <h1>Cadastro de Usuário</h1>
 
-    <form id="formCadastro">
-      <label for="nome">Nome Completo:</label>
-      <input type="text" id="nome" name="nome" required>
+    <!-- ===== TELA 1: FORMULÁRIO DE CADASTRO ===== -->
+    <div class="form-container" id="formCadastro">
+        <h1>Cadastro de Usuário</h1>
 
-      <label for="nascimento">Data de Nascimento:</label>
-      <input type="date" id="nascimento" name="nascimento" required>
+        <form id="cadastroForm" novalidate>
 
-      <label for="cpf">CPF:</label>
-      <input
-        type="text"
-        id="cpf"
-        name="cpf"
-        placeholder="Apenas números (11 dígitos)"
-        maxlength="11"
-        pattern="[0-9]{11}"
-        inputmode="numeric"
-        required
-      >
+            <div class="form-group">
+                <label for="nome">Nome Completo:</label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
 
-      <label for="genero">Gênero:</label>
-      <select id="genero" name="genero" required>
-        <option value="">Selecione...</option>
-        <option value="feminino">Feminino</option>
-        <option value="masculino">Masculino</option>
-        <option value="outro">Outro</option>
-      </select>
+            <div class="form-group">
+                <label for="nascimento">Data de Nascimento:</label>
+                <input type="date" id="nascimento" name="nascimento" required>
+            </div>
 
-      <label for="telefone">Telefone:</label>
-      <input
-        type="tel"
-        id="telefone"
-        name="telefone"
-        placeholder="(XX) XXXXX-XXXX"
-        required
-      >
+            <div class="form-group">
+                <label for="cpf">CPF:</label>
+                <input
+                    type="text"
+                    id="cpf"
+                    name="cpf"
+                    placeholder="Apenas números (11 dígitos)"
+                    maxlength="11"
+                    pattern="[0-9]{11}"
+                    required
+                >
+                <span class="error-msg" id="cpfError">O CPF deve conter exatamente 11 dígitos numéricos.</span>
+            </div>
 
-      <label for="email">E-mail:</label>
-      <input type="email" id="email" name="email" required>
+            <div class="form-group">
+                <label for="genero">Gênero:</label>
+                <select id="genero" name="genero" required>
+                    <option value="">Selecione...</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="feminino">Feminino</option>
+                    <option value="outro">Outro</option>
+                    <option value="prefiro_nao_informar">Prefiro não informar</option>
+                </select>
+            </div>
 
-      <label for="cidade">Cidade:</label>
-      <input type="text" id="cidade" name="cidade" required>
+            <div class="form-group">
+                <label for="telefone">Telefone:</label>
+                <input
+                    type="text"
+                    id="telefone"
+                    name="telefone"
+                    placeholder="(XX) XXXXX-XXXX"
+                    required
+                >
+            </div>
 
-      <label for="uf">UF (Estado):</label>
-      <select id="uf" name="uf" required>
-        <option value="">Selecione</option>
-        <option>AC</option>
-        <option>AL</option>
-        <option>AP</option>
-        <option>AM</option>
-        <option>BA</option>
-        <option>CE</option>
-        <option>DF</option>
-        <option>ES</option>
-        <option>GO</option>
-        <option>MA</option>
-        <option>MT</option>
-        <option>MS</option>
-        <option>MG</option>
-        <option>PA</option>
-        <option>PB</option>
-        <option>PR</option>
-        <option>PE</option>
-        <option>PI</option>
-        <option>RJ</option>
-        <option>RN</option>
-        <option>RS</option>
-        <option>RO</option>
-        <option>RR</option>
-        <option>SC</option>
-        <option>SP</option>
-        <option>SE</option>
-        <option>TO</option>
-      </select>
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
 
-      <button type="submit">Cadastrar</button>
-    </form>
-  </main>
-```html
-<script>
-  const form = document.getElementById("formCadastro");
+            <div class="form-group">
+                <label for="cidade">Cidade:</label>
+                <input type="text" id="cidade" name="cidade" required>
+            </div>
 
-  form.addEventListener("submit", function(event) {
-    event.preventDefault();
+            <div class="form-group">
+                <label for="uf">UF (Estado):</label>
+                <select id="uf" name="uf" required>
+                    <option value="">Selecione</option>
+                    <option value="AC">AC</option>
+                    <option value="AL">AL</option>
+                    <option value="AP">AP</option>
+                    <option value="AM">AM</option>
+                    <option value="BA">BA</option>
+                    <option value="CE">CE</option>
+                    <option value="DF">DF</option>
+                    <option value="ES">ES</option>
+                    <option value="GO">GO</option>
+                    <option value="MA">MA</option>
+                    <option value="MT">MT</option>
+                    <option value="MS">MS</option>
+                    <option value="MG">MG</option>
+                    <option value="PA">PA</option>
+                    <option value="PB">PB</option>
+                    <option value="PR">PR</option>
+                    <option value="PE">PE</option>
+                    <option value="PI">PI</option>
+                    <option value="RJ">RJ</option>
+                    <option value="RN">RN</option>
+                    <option value="RS">RS</option>
+                    <option value="RO">RO</option>
+                    <option value="RR">RR</option>
+                    <option value="SC">SC</option>
+                    <option value="SP">SP</option>
+                    <option value="SE">SE</option>
+                    <option value="TO">TO</option>
+                </select>
+            </div>
 
-    document.getElementById("paginaCadastro").hidden = true;
-    document.getElementById("paginaSucesso").hidden = false;
-  });
-</script>
-```
+            <button type="submit" class="btn-cadastrar">Cadastrar</button>
+        </form>
+    </div>
 
-E a segunda parte precisa começar assim:
+    <!-- ===== TELA 2: AGRADECIMENTO ===== -->
+    <div class="thankyou-container" id="telaAgradecimento">
+        <h2>O SENAI AGRADECE SUA INSCRIÇÃO!!!</h2>
+        <button class="btn-voltar" id="btnVoltar">Voltar</button>
+    </div>
 
-```html
-<main class="container mensagem" id="paginaSucesso" hidden>
-```
-  <main class="container mensagem" id="paginaSucesso" hidden>
-    <h1>O SENAI AGRADECE SUA INSCRIÇÃO!!!</h1>
-    <button class="voltar" id="btnVoltar" type="button">Voltar</button>
-  </main>
+    <script>
+        const form = document.getElementById('cadastroForm');
+        const cpfInput = document.getElementById('cpf');
+        const cpfError = document.getElementById('cpfError');
+        const formCadastro = document.getElementById('formCadastro');
+        const telaAgradecimento = document.getElementById('telaAgradecimento');
+        const btnVoltar = document.getElementById('btnVoltar');
 
-  <script>
-    const form = document.getElementById("formCadastro");
-    const paginaCadastro = document.getElementById("paginaCadastro");
-    const paginaSucesso = document.getElementById("paginaSucesso");
-    const btnVoltar = document.getElementById("btnVoltar");
+        // === Máscara e validação do CPF (apenas números, máx. 11) ===
+        cpfInput.addEventListener('input', function () {
+            // Remove tudo que não é número
+            this.value = this.value.replace(/\D/g, '');
 
-    form.addEventListener("submit", function(event) {
-      event.preventDefault();
+            // Garante no máximo 11 caracteres
+            if (this.value.length > 11) {
+                this.value = this.value.slice(0, 11);
+            }
 
-      paginaCadastro.hidden = true;
-      paginaSucesso.hidden = false;
-    });
+            // Validação em tempo real
+            if (this.value.length > 0 && this.value.length < 11) {
+                cpfError.style.display = 'block';
+                this.classList.add('invalid');
+            } else {
+                cpfError.style.display = 'none';
+                this.classList.remove('invalid');
+            }
+        });
 
-    btnVoltar.addEventListener("click", function() {
-      paginaSucesso.hidden = true;
-      paginaCadastro.hidden = false;
-    });
+        // === Máscara simples do telefone ===
+        const telefoneInput = document.getElementById('telefone');
+        telefoneInput.addEventListener('input', function () {
+            let v = this.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.slice(0, 11);
+            if (v.length > 7) {
+                v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+            } else if (v.length > 2) {
+                v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+            } else if (v.length > 0) {
+                v = `(${v}`;
+            }
+            this.value = v;
+        });
 
-    document.getElementById("cpf").addEventListener("input", function() {
-      this.value = this.value.replace(/\D/g, "").slice(0, 11);
-    });
-  </script>
+        // === Envio do formulário ===
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Validação do CPF
+            if (cpfInput.value.length !== 11) {
+                cpfError.style.display = 'block';
+                cpfInput.classList.add('invalid');
+                cpfInput.focus();
+                return;
+            }
+
+            // Verifica se todos os campos obrigatórios estão preenchidos
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // Mostra a tela de agradecimento
+            formCadastro.style.display = 'none';
+            telaAgradecimento.style.display = 'flex';
+        });
+
+        // === Botão Voltar ===
+        btnVoltar.addEventListener('click', function () {
+            telaAgradecimento.style.display = 'none';
+            formCadastro.style.display = 'block';
+            form.reset();
+            cpfError.style.display = 'none';
+            cpfInput.classList.remove('invalid');
+        });
+    </script>
+
 </body>
 </html>
-```
